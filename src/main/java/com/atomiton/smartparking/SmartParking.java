@@ -36,7 +36,7 @@ import com.atomiton.smartparking.util.WebSocketListener;
 
 
 
-/**
+/*
  * The purpose of this class is to generate Events.
  * @author baseerkhan
  *
