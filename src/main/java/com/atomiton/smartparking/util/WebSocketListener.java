@@ -52,6 +52,9 @@ public class WebSocketListener {
     @OnWebSocketMessage
     public void onMessage(String msg) {
         System.out.printf("Got msg: %s%n", msg);
+        
+        
+        
         //Do something with it. This is where you fill in the
         //business logic to manage the parking lot
     }
