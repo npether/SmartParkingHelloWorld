@@ -45,7 +45,7 @@ public class SmartParking {
 	
 	//global variables
 	
-	public static ParkingLot pl;
+	//public static ParkingLot pl;
 	/*******************************************************************************
 	 * @param args
 	 * 
@@ -59,7 +59,7 @@ public class SmartParking {
 
 			System.out.println("Welcome to Smart Parking Hello World Application.");
 			
-			pl = getSnapshot();
+			//pl = getSnapshot();
 			if (args.length > 0) {
 				switch (args[0]) {
 				case "getOrgs": {
@@ -137,7 +137,7 @@ public class SmartParking {
 					for (String spotId: keys) {
 						//Change the intensity of all floors one at a time.
 						ParkingLotAction.actionOnStallLight(pStallMap.get(spotId), spotId, powerState);
-						System.out.println("-->" + spotId + " " + pStallMap.get(spotId) + "<--");
+//						System.out.println("-->" + spotId + " " + pStallMap.get(spotId) + "<--");
 					}
 					break;
 				}
@@ -200,7 +200,7 @@ public class SmartParking {
 		for (ParkingFloor pf: pl.getParkingFloors()) {
 			for (ParkingSpot ps: pf.getParkingSpots()) {
 				if (ps.getAreaLightInfo() != null) { //Is Area Light attached to the spot?
-					System.out.println(ps.getId() + "---->" + ps.getAreaLightInfo().getid());
+//					System.out.println(ps.getId() + "---->" + ps.getAreaLightInfo().getid());
 					alMap.put(ps.getId(), ps.getAreaLightInfo().getid());
 				}
 			}
@@ -219,7 +219,7 @@ public class SmartParking {
 		for (ParkingFloor pf: pl.getParkingFloors()) {
 			for (ParkingSpot ps: pf.getParkingSpots()) {
 				if (ps.getStallLightInfo() != null) { //Is Stall Light attached to the spot?
-					System.out.println(ps.getId() + "---->" + ps.getStallLightInfo().getid());
+//					System.out.println(ps.getId() + "---->" + ps.getStallLightInfo().getid());
 					alMap.put(ps.getId(), ps.getStallLightInfo().getid());
 				}
 			}
@@ -238,7 +238,7 @@ public class SmartParking {
 		for (ParkingFloor pf: pl.getParkingFloors()) {
 			for (ParkingSpot ps: pf.getParkingSpots()) {
 				if (ps.getParkingMeterInfo() != null) { //Is Parking attached to the spot?
-					System.out.println(ps.getId() + "---->" + ps.getAreaLightInfo().getid());
+//					System.out.println(ps.getId() + "---->" + ps.getAreaLightInfo().getid());
 					pmMap.put(ps.getId(), ps.getParkingMeterInfo().getid());
 				}
 			}
@@ -269,6 +269,7 @@ public class SmartParking {
 	}
 	
 	public static void updateStallLight(String spotId, String powerState) throws Exception {
+		ParkingLot pl = getSnapshot();
 		Map<String, String> pStallMap = getStallLightMap(pl);
 		ParkingLotAction.actionOnStallLight(pStallMap.get(spotId), spotId, powerState);
 	}
