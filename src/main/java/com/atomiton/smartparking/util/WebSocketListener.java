@@ -54,6 +54,12 @@ public class WebSocketListener {
         System.out.printf("Got msg: %s%n", msg);
         
         
+        String name = msg.substring(msg.indexOf("Name=\""), msg.indexOf("\"", msg.indexOf("Name=\"")));
+        String target = msg.substring(msg.indexOf("Target=\""), msg.indexOf("\"", msg.indexOf("Target=\"")));
+        long time = Long.parseLong(msg.substring(msg.indexOf("Time=\""), msg.indexOf("\"", msg.indexOf("Time=\""))));
+        String value = msg.substring(msg.indexOf("Value=\""), msg.indexOf("\"", msg.indexOf("Value=\"")));
+
+        
         
         //Do something with it. This is where you fill in the
         //business logic to manage the parking lot
