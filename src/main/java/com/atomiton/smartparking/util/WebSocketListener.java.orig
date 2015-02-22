@@ -52,7 +52,6 @@ public class WebSocketListener {
     @OnWebSocketClose
     public void onClose(int statusCode, String reason) {
         System.out.printf("Connection closed: %d - %s%n", statusCode, reason);
-        System.out.println("why");
         this.session = null;
         this.closeLatch.countDown();
     }
@@ -66,7 +65,7 @@ public class WebSocketListener {
         
         ParkingFloor pf = pl.getParkingFloors().get(target.get("F"));
         ParkingSpot ps = pf.getParkingSpots().get(target.get("S"));
-        String status = SPUtil.newStatus((event.get("Value")));
+        String value = event.get("Value");
         
 //        updateSpot(pf, ps, event.get("Value"));
     }          
