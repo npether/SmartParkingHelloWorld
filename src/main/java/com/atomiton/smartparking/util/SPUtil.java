@@ -143,8 +143,17 @@ public class SPUtil {
 		}
 		return numbers;
 	}
-		
-//	Target="Atom-Org-1.F3.S264"
+	
+	public static String newStatus(String value){
+		switch(value){
+		case "occupied": return "on";
+		case "Car In": return "on";
+		case "available": return "off";
+		case "Car Out": return "off";
+		default: return "off";
+		}
+	}
+	
 	public static Map<String, Integer>parseTarget(String target){
 		Map<String, Integer> targetMap =  new HashMap<String, Integer>();
 
