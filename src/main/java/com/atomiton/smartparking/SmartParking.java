@@ -46,7 +46,7 @@ public class SmartParking {
 	
 	//global variables
 	
-	public static ParkingLot pl;
+	public static Map<String, String> pStallMap;
 	/*******************************************************************************
 	 * @param args
 	 * 
@@ -60,7 +60,7 @@ public class SmartParking {
 
 			System.out.println("Welcome to Smart Parking Hello World Application.");
 			
-			pl = getSnapshot();
+			pStallMap = getStallLightMap(getSnapshot());
 			if (args.length > 0) {
 				switch (args[0]) {
 				case "getOrgs": {
@@ -86,7 +86,7 @@ public class SmartParking {
 						while(true) {
 							ParkingLot pl = getSnapshot();
 							for (ParkingFloor pf: pl.getParkingFloors()) {
-								double ocRate = getOccupancy(pf);
+								int ocRate = getOccupancy(pf);
 								updateAreaLights(pf, ocRate);
 								updateFloorPrice(pf, ocRate);
 							}
@@ -201,13 +201,13 @@ public class SmartParking {
 		return pl;
 	}
 
-	private static double getOccupancy(ParkingFloor pf) {
-		double numOccupied = 0;
+	private static int getOccupancy(ParkingFloor pf) {
+		int numOccupied = 0;
 		List<ParkingSpot> psList = pf.getParkingSpots();
 		for (ParkingSpot ps: psList) {
-			if (ps.getState().equals("occupied")) numOccupied++; 
+			if (ps.getState().equals("on")) numOccupied++; 
 		}
-		return numOccupied/psList.size();
+		return (numOccupied/psList.size()) * 100;
 	}
 
 	/**
@@ -285,14 +285,13 @@ public class SmartParking {
 	}
 	
 	public static void updateStallLight(String spotId, String powerState) throws Exception {
-		Map<String, String> pStallMap = getStallLightMap(pl);
 		ParkingLotAction.actionOnStallLight(pStallMap.get(spotId), spotId, powerState);
 	}
 	
-	public static void updateAreaLights(ParkingFloor pf, double ocRate) throws Exception {
+	public static void updateAreaLights(ParkingFloor pf, int ocRate) throws Exception {
 		Map<String, String> areaMap = getAreaLightMap(pf);
-		double newIntensityDb = ocRate > 0.1 ? ocRate : 0.1;
-		String newIntensity = Double.toString(newIntensityDb * 100);
+		int newIntensityDb = ocRate > 10 ? ocRate : 10;
+		String newIntensity = Integer.toString(newIntensityDb);
 		Set<String> keys = areaMap.keySet(); //All the spotIds
 		for (String spotId: keys) {
 			//Change the intensity of all area lights on floor one at a time.
@@ -300,9 +299,9 @@ public class SmartParking {
 		}
 	}
 	
-	public static void updateFloorPrice(ParkingFloor pf, double ocRate) throws Exception {
+	public static void updateFloorPrice(ParkingFloor pf, int ocRate) throws Exception {
 		Map<String, String> pMeterMap = getParkingMeterMap(pf);
-		String newPrice = Double.toString((ocRate * 5) + 1);
+		String newPrice = Integer.toString((int)(ocRate * 0.2) + 1);
 		Set<String> keys = pMeterMap.keySet(); //All the spotIds
 		for (String spotId: keys) {
 			//Change the price of all parking meters on floor one at a time.
