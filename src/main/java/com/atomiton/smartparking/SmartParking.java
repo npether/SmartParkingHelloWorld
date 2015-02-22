@@ -207,7 +207,7 @@ public class SmartParking {
 		for (ParkingSpot ps: psList) {
 			if (ps.getState().equals("on")) numOccupied++; 
 		}
-		return (numOccupied/psList.size()) * 100;
+		return numOccupied*100/psList.size();
 	}
 
 	/**
@@ -219,7 +219,7 @@ public class SmartParking {
 		Map<String, String> alMap = new HashMap<String, String>();
 		for (ParkingSpot ps: pf.getParkingSpots()) {
 			if (ps.getAreaLightInfo() != null) { //Is Area Light attached to the spot?
-				System.out.println(ps.getId() + "---->" + ps.getAreaLightInfo().getid());
+//				System.out.println(ps.getId() + "---->" + ps.getAreaLightInfo().getid());
 				alMap.put(ps.getId(), ps.getAreaLightInfo().getid());
 			}
 		}
@@ -237,7 +237,7 @@ public class SmartParking {
 		for (ParkingFloor pf: pl.getParkingFloors()) {
 			for (ParkingSpot ps: pf.getParkingSpots()) {
 				if (ps.getStallLightInfo() != null) { //Is Stall Light attached to the spot?
-					System.out.println(ps.getId() + "---->" + ps.getStallLightInfo().getid());
+//					System.out.println(ps.getId() + "---->" + ps.getStallLightInfo().getid());
 					alMap.put(ps.getId(), ps.getStallLightInfo().getid());
 				}
 			}
@@ -255,7 +255,7 @@ public class SmartParking {
 		Map<String, String> pmMap = new HashMap<String, String>();
 		for (ParkingSpot ps: pf.getParkingSpots()) {
 			if (ps.getParkingMeterInfo() != null) { //Is Parking attached to the spot?
-				System.out.println(ps.getId() + "---->" + ps.getAreaLightInfo().getid());
+//				System.out.println(ps.getId() + "---->" + ps.getAreaLightInfo().getid());
 				pmMap.put(ps.getId(), ps.getParkingMeterInfo().getid());
 			}
 		}
@@ -301,7 +301,7 @@ public class SmartParking {
 	
 	public static void updateFloorPrice(ParkingFloor pf, int ocRate) throws Exception {
 		Map<String, String> pMeterMap = getParkingMeterMap(pf);
-		String newPrice = Integer.toString((int)(ocRate * 0.2) + 1);
+		String newPrice = Integer.toString((ocRate / 20) + 1);
 		Set<String> keys = pMeterMap.keySet(); //All the spotIds
 		for (String spotId: keys) {
 			//Change the price of all parking meters on floor one at a time.
