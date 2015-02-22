@@ -11,6 +11,11 @@ import org.eclipse.jetty.websocket.api.annotations.OnWebSocketConnect;
 import org.eclipse.jetty.websocket.api.annotations.OnWebSocketMessage;
 import org.eclipse.jetty.websocket.api.annotations.WebSocket;
 
+import com.atomiton.smartparking.SmartParking;
+import com.atomiton.smartparking.model.ParkingFloor;
+import com.atomiton.smartparking.model.ParkingLot;
+import com.atomiton.smartparking.model.ParkingSpot;
+
 /**
  * The purpose of this class is to listen to event over a websockets.
  * Following Events will be recieved: 
@@ -52,12 +57,18 @@ public class WebSocketListener {
     }
     
     @OnWebSocketMessage
-    public void onMessage(String msg) {
+    public void onMessage(String msg) throws Exception {
         System.out.printf("Got event: %s%n", msg);
         Map<String, String>event = SPUtil.parseMSEvent(msg);
         Map<String, Integer>target = SPUtil.parseTarget(event.get("Target"));
+        ParkingLot pl = SmartParking.getSnapshot();
+        
+        ParkingFloor pf = pl.getParkingFloors().get(target.get("F"));
+        ParkingSpot ps = pf.getParkingSpots().get(target.get("S"));
+        
+//        updateSpot(pf, ps);
                 
-        System.out.println(event.get("Name") + " " + event.get("Target") + " " + event.get("Time") + " " + event.get("Value"));
-        System.out.println(target.get("Org") + " " + target.get("F") + " " + target.get("S"));
+//        System.out.println(event.get("Name") + " " + event.get("Target") + " " + event.get("Time") + " " + event.get("Value"));
+//        System.out.println(target.get("Org") + " " + target.get("F") + " " + target.get("S"));
     }
 }
