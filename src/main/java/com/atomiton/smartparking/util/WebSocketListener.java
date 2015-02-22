@@ -53,15 +53,20 @@ public class WebSocketListener {
     public void onMessage(String msg) {
         System.out.printf("Got msg: %s%n", msg);
         
-        
-        String name = msg.substring(msg.indexOf("Name=\""), msg.indexOf("\"", msg.indexOf("Name=\"")));
-        String target = msg.substring(msg.indexOf("Target=\""), msg.indexOf("\"", msg.indexOf("Target=\"")));
-        long time = Long.parseLong(msg.substring(msg.indexOf("Time=\""), msg.indexOf("\"", msg.indexOf("Time=\""))));
-        String value = msg.substring(msg.indexOf("Value=\""), msg.indexOf("\"", msg.indexOf("Value=\"")));
+        int quote1 = msg.indexOf("\"")+1;
+        int quote2 = msg.indexOf("\"",quote1+1);
+        int quote3 = msg.indexOf("\"",quote2+1)+1;
+        int quote4 = msg.indexOf("\"",quote3+1);
+        int quote5 = msg.indexOf("\"",quote4+1)+1;
+        int quote6 = msg.indexOf("\"",quote5+1);
+        int quote7 = msg.indexOf("\"",quote6+1)+1;
+        int quote8 = msg.indexOf("\"",quote7+1);
 
-        
-        
-        //Do something with it. This is where you fill in the
-        //business logic to manage the parking lot
+        String name = msg.substring(quote1,quote2);
+        String target = msg.substring(quote3,quote4);
+        String time = msg.substring(quote5,quote6);
+        String value = msg.substring(quote7,quote8);
+
+        System.out.println(name + " " + target + " " + time + " " + value);
     }
 }
