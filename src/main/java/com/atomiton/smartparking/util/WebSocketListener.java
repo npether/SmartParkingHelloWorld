@@ -52,7 +52,21 @@ public class WebSocketListener {
     @OnWebSocketMessage
     public void onMessage(String msg) {
         System.out.printf("Got msg: %s%n", msg);
-        //Do something with it. This is where you fill in the
-        //business logic to manage the parking lot
+        
+        int quote1 = msg.indexOf("\"")+1;
+        int quote2 = msg.indexOf("\"",quote1+1);
+        int quote3 = msg.indexOf("\"",quote2+1)+1;
+        int quote4 = msg.indexOf("\"",quote3+1);
+        int quote5 = msg.indexOf("\"",quote4+1)+1;
+        int quote6 = msg.indexOf("\"",quote5+1);
+        int quote7 = msg.indexOf("\"",quote6+1)+1;
+        int quote8 = msg.indexOf("\"",quote7+1);
+
+        String name = msg.substring(quote1,quote2);
+        String target = msg.substring(quote3,quote4);
+        String time = msg.substring(quote5,quote6);
+        String value = msg.substring(quote7,quote8);
+
+        System.out.println(name + " " + target + " " + time + " " + value);
     }
 }

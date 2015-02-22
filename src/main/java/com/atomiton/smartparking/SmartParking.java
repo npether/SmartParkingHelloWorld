@@ -66,7 +66,7 @@ public class SmartParking {
 					printSnapshot();
 					break;
 				}
-
+				
 				case "events": {
 					WebSocketClient client = new WebSocketClient();
 					WebSocketListener wsListener = new WebSocketListener();
@@ -159,7 +159,8 @@ public class SmartParking {
 			e.printStackTrace();
 		}
 	}
-
+	
+	
 	public static String getOrgId() throws Exception {
 		System.out.println("Getting list of Organizations..");
 		String output = HttpRequestResponseHandler.sendGet(
