@@ -50,42 +50,14 @@ public class WebSocketListener {
         this.session = null;
         this.closeLatch.countDown();
     }
- 
-    public Map<String, String>parseEvent(String event){
-    	Map<String, String> eventMap =  new HashMap<String, String>();
-    	
-//    	Got event: <Set Name="magneticSensor.parkingSpotId" Target="Atom-Org-1.F2.S193" Time="1424482049254" Value="occupied"/>
-
-    	int startName = event.indexOf("\"")+1;
-        int endName = event.indexOf("\"",startName+1);
-        String name = event.substring(startName,endName);
-        eventMap.put("Name", name);
-        
-        int startTarget = event.indexOf("\"",endName+1)+1;
-        int endTarget = event.indexOf("\"",startTarget+1);
-        String target = event.substring(startTarget,endTarget);
-        eventMap.put("Target", target);
-        
-        int startTime = event.indexOf("\"",endTarget+1)+1;
-        int endTime = event.indexOf("\"",startTime+1);
-        String time = event.substring(startTime,endTime);
-        eventMap.put("Time", time);
-        
-        int startValue = event.indexOf("\"",endTime+1)+1;
-        int endValue = event.indexOf("\"",startValue+1);
-        String value = event.substring(startValue,endValue);       
-    	eventMap.put("Value", value);
-    	
-    	//Parsing the target:    	
-    	//Target="Atom-Org-1.F3.S192"
-//    	int orgStart = target.indexOf("")
-    	return eventMap;
-    }
     
     @OnWebSocketMessage
     public void onMessage(String msg) {
         System.out.printf("Got event: %s%n", msg);
-        Map<String, String>event = parseEvent(msg);
+        Map<String, String>event = SPUtil.parseMSEvent(msg);
+        Map<String, Integer>target = SPUtil.parseTarget(event.get("Target"));
+        
+        //get the target
         
         
 
