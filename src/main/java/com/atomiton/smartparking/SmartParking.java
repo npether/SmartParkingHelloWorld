@@ -16,6 +16,7 @@ package com.atomiton.smartparking;
 
 import java.net.URI;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
@@ -82,7 +83,14 @@ public class SmartParking {
 						ClientUpgradeRequest request = new ClientUpgradeRequest();
 						client.connect(wsListener, wsUri, request);
 						System.out.printf("Connecting to : %s%n", wsUri);
-						while(true);
+						while(true) {
+							ParkingLot pl = getSnapshot();
+							for (ParkingFloor pf: pl.getParkingFloors()) {
+								double ocRate = getOccupancy(pf);
+								updateAreaLights(pf, ocRate);
+								updateFloorPrice(pf, ocRate);
+							}
+						}
 //						wsListener.awaitClose(5, TimeUnit.SECONDS);
 					} catch (Throwable t) {
 						t.printStackTrace();
@@ -98,30 +106,34 @@ public class SmartParking {
 
 				case "updateLight": {
 					ParkingLot pl = getSnapshot();
-					Map<String, String> areaMap = getAreaLightMap(pl);
-					String newIntensity = "90";
-					if (args.length > 1) {
-						newIntensity = args[1];
-					}
-					Set<String> keys = areaMap.keySet(); //All the spotIds
-					for (String spotId: keys) {
-						//Change the intensity of all floors one at a time.
-						ParkingLotAction.actionOnAreaLight(areaMap.get(spotId), spotId, newIntensity);
+					for (ParkingFloor pf: pl.getParkingFloors()) {
+						Map<String, String> areaMap = getAreaLightMap(pf);
+						String newIntensity = "90";
+						if (args.length > 1) {
+							newIntensity = args[1];
+						}
+						Set<String> keys = areaMap.keySet(); //All the spotIds
+						for (String spotId: keys) {
+							//Change the intensity of all floors one at a time.
+							ParkingLotAction.actionOnAreaLight(areaMap.get(spotId), spotId, newIntensity);
+						}
 					}
 					break;
 				}
 				
 				case "updatePrice": {
 					ParkingLot pl = getSnapshot();
-					Map<String, String> pMeterMap = getParkingMeterMap(pl);
-					String newPrice = "1";
-					if (args.length > 1) {
-						newPrice = args[1];
-					}
-					Set<String> keys = pMeterMap.keySet(); //All the spotIds
-					for (String spotId: keys) {
-						//Change the intensity of all floors one at a time.
-						ParkingLotAction.actionOnParkingMeter(pMeterMap.get(spotId), spotId, newPrice);
+					for (ParkingFloor pf: pl.getParkingFloors()) {
+						Map<String, String> pMeterMap = getParkingMeterMap(pf);
+						String newPrice = "1";
+						if (args.length > 1) {
+							newPrice = args[1];
+						}
+						Set<String> keys = pMeterMap.keySet(); //All the spotIds
+						for (String spotId: keys) {
+							//Change the intensity of all floors one at a time.
+							ParkingLotAction.actionOnParkingMeter(pMeterMap.get(spotId), spotId, newPrice);
+						}
 					}
 					break;
 				}
@@ -189,20 +201,26 @@ public class SmartParking {
 		return pl;
 	}
 
+	private static double getOccupancy(ParkingFloor pf) {
+		double numOccupied = 0;
+		List<ParkingSpot> psList = pf.getParkingSpots();
+		for (ParkingSpot ps: psList) {
+			if (ps.getState().equals("occupied")) numOccupied++; 
+		}
+		return numOccupied/psList.size();
+	}
 
 	/**
 	 * This method creates a map of Parking Spot where Area Lights are attached.
 	 * @param pl
 	 * @return
 	 */
-	public static Map<String, String> getAreaLightMap(ParkingLot pl) {
+	public static Map<String, String> getAreaLightMap(ParkingFloor pf) {
 		Map<String, String> alMap = new HashMap<String, String>();
-		for (ParkingFloor pf: pl.getParkingFloors()) {
-			for (ParkingSpot ps: pf.getParkingSpots()) {
-				if (ps.getAreaLightInfo() != null) { //Is Area Light attached to the spot?
-					System.out.println(ps.getId() + "---->" + ps.getAreaLightInfo().getid());
-					alMap.put(ps.getId(), ps.getAreaLightInfo().getid());
-				}
+		for (ParkingSpot ps: pf.getParkingSpots()) {
+			if (ps.getAreaLightInfo() != null) { //Is Area Light attached to the spot?
+				System.out.println(ps.getId() + "---->" + ps.getAreaLightInfo().getid());
+				alMap.put(ps.getId(), ps.getAreaLightInfo().getid());
 			}
 		}
 		return alMap;
@@ -210,7 +228,7 @@ public class SmartParking {
 	
 	
 	/**
-	 * This method creates a map of Parking Spot where Area Lights are attached.
+	 * This method creates a map of Parking Spot where Stall Lights are attached.
 	 * @param pl
 	 * @return
 	 */
@@ -233,14 +251,12 @@ public class SmartParking {
 	 * @param pl
 	 * @return
 	 */
-	public static Map<String, String> getParkingMeterMap(ParkingLot pl) {
+	public static Map<String, String> getParkingMeterMap(ParkingFloor pf) {
 		Map<String, String> pmMap = new HashMap<String, String>();
-		for (ParkingFloor pf: pl.getParkingFloors()) {
-			for (ParkingSpot ps: pf.getParkingSpots()) {
-				if (ps.getParkingMeterInfo() != null) { //Is Parking attached to the spot?
-					System.out.println(ps.getId() + "---->" + ps.getAreaLightInfo().getid());
-					pmMap.put(ps.getId(), ps.getParkingMeterInfo().getid());
-				}
+		for (ParkingSpot ps: pf.getParkingSpots()) {
+			if (ps.getParkingMeterInfo() != null) { //Is Parking attached to the spot?
+				System.out.println(ps.getId() + "---->" + ps.getAreaLightInfo().getid());
+				pmMap.put(ps.getId(), ps.getParkingMeterInfo().getid());
 			}
 		}
 		return pmMap;
@@ -271,6 +287,27 @@ public class SmartParking {
 	public static void updateStallLight(String spotId, String powerState) throws Exception {
 		Map<String, String> pStallMap = getStallLightMap(pl);
 		ParkingLotAction.actionOnStallLight(pStallMap.get(spotId), spotId, powerState);
+	}
+	
+	public static void updateAreaLights(ParkingFloor pf, double ocRate) throws Exception {
+		Map<String, String> areaMap = getAreaLightMap(pf);
+		double newIntensityDb = ocRate > 0.1 ? ocRate : 0.1;
+		String newIntensity = Double.toString(newIntensityDb * 100);
+		Set<String> keys = areaMap.keySet(); //All the spotIds
+		for (String spotId: keys) {
+			//Change the intensity of all area lights on floor one at a time.
+			ParkingLotAction.actionOnAreaLight(areaMap.get(spotId), spotId, newIntensity);
+		}
+	}
+	
+	public static void updateFloorPrice(ParkingFloor pf, double ocRate) throws Exception {
+		Map<String, String> pMeterMap = getParkingMeterMap(pf);
+		String newPrice = Double.toString((ocRate * 5) + 1);
+		Set<String> keys = pMeterMap.keySet(); //All the spotIds
+		for (String spotId: keys) {
+			//Change the price of all parking meters on floor one at a time.
+			ParkingLotAction.actionOnParkingMeter(pMeterMap.get(spotId), spotId, newPrice);
+		}
 	}
 
 
