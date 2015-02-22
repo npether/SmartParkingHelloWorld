@@ -205,8 +205,10 @@ public class ParkingLotAction {
 	public static void actionOnStallLight(String stallLightId, String spotId, String powerState)
 			throws Exception {
 		String psr = getStallLightById(SPConstants.SERVER_URL, stallLightId);
+		System.out.println(psr);
 		if (psr != null) {
 			JSONObject obj = new JSONObject(psr);
+			System.out.println(obj);
 			String sid = obj.getJSONObject("StallLight").getString("sid");
 			String powerStateVersion = ""+obj.getJSONObject("StallLight").getJSONObject("powerState").getInt("Version");
 			System.out.println(sid + "  " + " " + powerStateVersion);

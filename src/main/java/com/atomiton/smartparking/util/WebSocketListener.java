@@ -11,6 +11,8 @@ import org.eclipse.jetty.websocket.api.annotations.OnWebSocketConnect;
 import org.eclipse.jetty.websocket.api.annotations.OnWebSocketMessage;
 import org.eclipse.jetty.websocket.api.annotations.WebSocket;
 
+import com.atomiton.smartparking.SmartParking;
+
 /**
  * The purpose of this class is to listen to event over a websockets.
  * Following Events will be recieved: 
@@ -47,6 +49,7 @@ public class WebSocketListener {
     @OnWebSocketClose
     public void onClose(int statusCode, String reason) {
         System.out.printf("Connection closed: %d - %s%n", statusCode, reason);
+        System.out.println("why");
         this.session = null;
         this.closeLatch.countDown();
     }
@@ -84,21 +87,42 @@ public class WebSocketListener {
     
     @OnWebSocketMessage
     public void onMessage(String msg) {
-        System.out.printf("Got event: %s%n", msg);
+//        System.out.printf("Got event: %s%n", msg);
         Map<String, String>event = parseEvent(msg);
-        
+        System.out.println(event.get("Value"));
         switch(event.get("Value")){
         	case "occupied":{
-//				ParkingLotAction.actionOnStallLight(pStallMap.get(spotId), spotId, powerState);
+				try {
+					SmartParking.updateStallLight(event.get("Value"), "off");
+				} catch (Exception e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				System.out.println("wassup");
         		break;
         	}
         	case "Car In": {
+        		try {
+					SmartParking.updateStallLight(event.get("Value"), "on");
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
         		break;
         	}
         	case "Car Out": {
+        		try {
+					SmartParking.updateStallLight(event.get("Value"), "off");
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
         		break;
         	}
         	case "available": {
+        		try {
+					SmartParking.updateStallLight(event.get("Value"), "off");
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
         		break;
         	}
         	default:{
