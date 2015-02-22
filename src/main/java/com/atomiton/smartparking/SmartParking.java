@@ -137,6 +137,7 @@ public class SmartParking {
 					for (String spotId: keys) {
 						//Change the intensity of all floors one at a time.
 						ParkingLotAction.actionOnStallLight(pStallMap.get(spotId), spotId, powerState);
+						System.out.println("-->" + spotId + " " + pStallMap.get(spotId) + "<--");
 					}
 					break;
 				}

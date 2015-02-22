@@ -87,6 +87,26 @@ public class WebSocketListener {
         System.out.printf("Got event: %s%n", msg);
         Map<String, String>event = parseEvent(msg);
         
+        switch(event.get("Value")){
+        	case "occupied":{
+//				ParkingLotAction.actionOnStallLight(pStallMap.get(spotId), spotId, powerState);
+        		break;
+        	}
+        	case "Car In": {
+        		break;
+        	}
+        	case "Car Out": {
+        		break;
+        	}
+        	case "available": {
+        		break;
+        	}
+        	default:{
+        		System.out.println("ERROR");
+        		break;
+        	}
+        }
+        
         System.out.println(event.get("Name") + " " + event.get("Target") + " " + event.get("Time") + " " + event.get("Value"));
     }
 }
