@@ -42,7 +42,10 @@ import com.atomiton.smartparking.util.WebSocketListener;
  *
  */
 public class SmartParking {
-
+	
+	//global variables
+	
+	public static ParkingLot pl;
 	/*******************************************************************************
 	 * @param args
 	 * 
@@ -50,10 +53,13 @@ public class SmartParking {
 	 * 
 	 * 
 	 ********************************************************************************/
+	
 	public static void main(String[] args) {
 		try {
 
 			System.out.println("Welcome to Smart Parking Hello World Application.");
+			
+			pl = getSnapshot();
 			if (args.length > 0) {
 				switch (args[0]) {
 				case "getOrgs": {
@@ -131,6 +137,7 @@ public class SmartParking {
 					for (String spotId: keys) {
 						//Change the intensity of all floors one at a time.
 						ParkingLotAction.actionOnStallLight(pStallMap.get(spotId), spotId, powerState);
+						System.out.println("-->" + spotId + " " + pStallMap.get(spotId) + "<--");
 					}
 					break;
 				}
@@ -259,6 +266,11 @@ public class SmartParking {
 		System.out.println("updateLight");
 		System.out.println("updatePrice");
 		System.out.println("updateStallLight");
+	}
+	
+	public static void updateStallLight(String spotId, String powerState) throws Exception {
+		Map<String, String> pStallMap = getStallLightMap(pl);
+		ParkingLotAction.actionOnStallLight(pStallMap.get(spotId), spotId, powerState);
 	}
 
 

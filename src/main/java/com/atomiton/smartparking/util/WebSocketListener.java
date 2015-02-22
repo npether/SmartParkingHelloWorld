@@ -65,10 +65,8 @@ public class WebSocketListener {
         
         ParkingFloor pf = pl.getParkingFloors().get(target.get("F"));
         ParkingSpot ps = pf.getParkingSpots().get(target.get("S"));
+        String value = event.get("Value");
         
-//        updateSpot(pf, ps);
-                
-//        System.out.println(event.get("Name") + " " + event.get("Target") + " " + event.get("Time") + " " + event.get("Value"));
-//        System.out.println(target.get("Org") + " " + target.get("F") + " " + target.get("S"));
-    }
-}
+//        updateSpot(pf, ps, event.get("Value"));
+    }          
+   }
