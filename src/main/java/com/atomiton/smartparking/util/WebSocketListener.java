@@ -1,5 +1,7 @@
 package com.atomiton.smartparking.util;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 
@@ -49,24 +51,44 @@ public class WebSocketListener {
         this.closeLatch.countDown();
     }
  
+    public Map<String, String>parseEvent(String event){
+    	Map<String, String> eventMap =  new HashMap<String, String>();
+    	
+//    	Got event: <Set Name="magneticSensor.parkingSpotId" Target="Atom-Org-1.F2.S193" Time="1424482049254" Value="occupied"/>
+
+    	int startName = event.indexOf("\"")+1;
+        int endName = event.indexOf("\"",startName+1);
+        String name = event.substring(startName,endName);
+        eventMap.put("Name", name);
+        
+        int startTarget = event.indexOf("\"",endName+1)+1;
+        int endTarget = event.indexOf("\"",startTarget+1);
+        String target = event.substring(startTarget,endTarget);
+        eventMap.put("Target", target);
+        
+        int startTime = event.indexOf("\"",endTarget+1)+1;
+        int endTime = event.indexOf("\"",startTime+1);
+        String time = event.substring(startTime,endTime);
+        eventMap.put("Time", time);
+        
+        int startValue = event.indexOf("\"",endTime+1)+1;
+        int endValue = event.indexOf("\"",startValue+1);
+        String value = event.substring(startValue,endValue);       
+    	eventMap.put("Value", value);
+    	
+    	//Parsing the target:    	
+    	//Target="Atom-Org-1.F3.S192"
+//    	int orgStart = target.indexOf("")
+    	return eventMap;
+    }
+    
     @OnWebSocketMessage
     public void onMessage(String msg) {
-        System.out.printf("Got msg: %s%n", msg);
+        System.out.printf("Got event: %s%n", msg);
+        Map<String, String>event = parseEvent(msg);
         
-        int quote1 = msg.indexOf("\"")+1;
-        int quote2 = msg.indexOf("\"",quote1+1);
-        int quote3 = msg.indexOf("\"",quote2+1)+1;
-        int quote4 = msg.indexOf("\"",quote3+1);
-        int quote5 = msg.indexOf("\"",quote4+1)+1;
-        int quote6 = msg.indexOf("\"",quote5+1);
-        int quote7 = msg.indexOf("\"",quote6+1)+1;
-        int quote8 = msg.indexOf("\"",quote7+1);
+        
 
-        String name = msg.substring(quote1,quote2);
-        String target = msg.substring(quote3,quote4);
-        String time = msg.substring(quote5,quote6);
-        String value = msg.substring(quote7,quote8);
-
-        System.out.println(name + " " + target + " " + time + " " + value);
+        System.out.println(event.get("Name") + " " + event.get("Target") + " " + event.get("Time") + " " + event.get("Value"));
     }
 }
