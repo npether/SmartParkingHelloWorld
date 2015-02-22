@@ -87,8 +87,6 @@ public class WebSocketListener {
         System.out.printf("Got event: %s%n", msg);
         Map<String, String>event = parseEvent(msg);
         
-        
-
         System.out.println(event.get("Name") + " " + event.get("Target") + " " + event.get("Time") + " " + event.get("Value"));
     }
 }
