@@ -76,7 +76,8 @@ public class SmartParking {
 						ClientUpgradeRequest request = new ClientUpgradeRequest();
 						client.connect(wsListener, wsUri, request);
 						System.out.printf("Connecting to : %s%n", wsUri);
-						wsListener.awaitClose(5, TimeUnit.SECONDS);
+						while(true);
+//						wsListener.awaitClose(5, TimeUnit.SECONDS);
 					} catch (Throwable t) {
 						t.printStackTrace();
 					} finally {
