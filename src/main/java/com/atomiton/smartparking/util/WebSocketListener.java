@@ -66,8 +66,9 @@ public class WebSocketListener {
         
         ParkingFloor pf = pl.getParkingFloors().get(target.get("F"));
         ParkingSpot ps = pf.getParkingSpots().get(target.get("S"));
-        String status = SPUtil.newStatus((event.get("Value")));
+        String spotid = ps.getId();
+        String powerState = SPUtil.newStatus((event.get("Value")));//"on"/"off"
         
-//        updateSpot(pf, ps, event.get("Value"));
+        SmartParking.updateStallLight(spotid, powerState);
     }          
    }
