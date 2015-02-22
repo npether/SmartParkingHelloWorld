@@ -56,11 +56,8 @@ public class WebSocketListener {
         System.out.printf("Got event: %s%n", msg);
         Map<String, String>event = SPUtil.parseMSEvent(msg);
         Map<String, Integer>target = SPUtil.parseTarget(event.get("Target"));
-        
-        //get the target
-        
-        
-
+                
         System.out.println(event.get("Name") + " " + event.get("Target") + " " + event.get("Time") + " " + event.get("Value"));
+        System.out.println(target.get("Org") + " " + target.get("F") + " " + target.get("S"));
     }
 }

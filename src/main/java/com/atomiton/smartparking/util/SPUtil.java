@@ -18,6 +18,7 @@ import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.nio.charset.StandardCharsets;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
@@ -127,18 +128,32 @@ public class SPUtil {
 		return eventMap;
 		}
 	
-//	/    public Map<String, Integer>parseTarget(String target){
-////	"Atom-Org-1.F2.S193"
-//	Map<String, Integer> targetMap =  new HashMap<String, Integer>();
-//	
-//	int startOrg = 
-//	
-//	return null;
-//}
-	
-	public static Map<String, Integer>parseTarget(String target){
+	public static ArrayList<Integer> parseForInts(String s){
+		ArrayList<Integer> numbers = new ArrayList<Integer>();
+		for(int i = 0; i < s.length(); i++){
+			char ch = s.charAt(i);
+			if(Character.isDigit(ch)){
+				int j = i;
+				while((j < s.length()) && (Character.isDigit(s.charAt(j)))){
+					j++;
+				}
+			numbers.add(Integer.valueOf(s.substring(i, j)));
+			i = j;	
+			}
+		}
+		return numbers;
+	}
 		
-		return null;
+//	Target="Atom-Org-1.F3.S264"
+	public static Map<String, Integer>parseTarget(String target){
+		Map<String, Integer> targetMap =  new HashMap<String, Integer>();
+
+		ArrayList<Integer> ids = parseForInts(target);
+		
+		targetMap.put("Org", ids.get(0));
+		targetMap.put("F", ids.get(1));
+		targetMap.put("S", ids.get(2));		
+		return targetMap;
 	}
 	
 }
